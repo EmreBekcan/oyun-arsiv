@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyc
+
+# Sanal ortam
+.venv/
+venv/
+env/
+
+# Veritabanı (kişisel veri)
+oyunlar.db
+
+# Yedekler
+yedekler/
+
+# Barkodlar
+barkodlar/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Exe çıktısı
+dist/
+build/
+*.spec

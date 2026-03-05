@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Oyun Arşiv – Taksit Hesaplama</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg:        #1a1a2e;
+            --sidebar:   #16213e;
+            --card:      #0f3460;
+            --accent:    #4a9fff;
+            --accent2:   #e94560;
+            --text:      #eaeaea;
+            --text2:     #a0a0b0;
+            --success:   #4caf50;
+            --warning:   #ff9800;
+            --row-odd:   #1e1e2e;
+            --row-even:  #24243a;
+            --row-sel:   rgba(74, 159, 255, 0.18);
+            --row-sel-border: #4a9fff;
+            --whatsapp:  #25d366;
+            --whatsapp-dark: #1aa34a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 24px 16px 40px;
+        }
+
+        /* ── Header ── */
+        .header {
+            max-width: 860px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .header-icon {
+            width: 50px; height: 50px;
+            background: linear-gradient(135deg, var(--accent), #8e5fff);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 4px 20px rgba(74,159,255,0.4);
+            flex-shrink: 0;
+        }
+        .header-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), #c77dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-text p {
+            font-size: 0.82rem;
+            color: var(--text2);
+            margin-top: 2px;
+        }
+
+        /* ── Container ── */
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            background: var(--sidebar);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(74,159,255,0.12);
+        }
+
+        /* ── Controls ── */
+        .controls {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            background: var(--row-odd);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            flex: 1 1 180px;
+        }
+        .input-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text2);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper span {
+            position: absolute;
+            right: 12px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.85rem;
+            pointer-events: none;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 11px 40px 11px 14px;
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 600;
+            background: var(--card);
+            border: 1.5px solid rgba(74,159,255,0.25);
+            border-radius: 10px;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            -moz-appearance: textfield;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+        input[type="number"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(74,159,255,0.2);
+        }
+
+        /* ── Summary ── */
+        .summary {
+            background: linear-gradient(135deg, rgba(74,159,255,0.1), rgba(142,95,255,0.08));
+            border: 1px solid rgba(74,159,255,0.25);
+            border-radius: 10px;
+            padding: 12px 18px;
+            font-size: 0.88rem;
+            color: var(--text2);
+            margin-bottom: 20px;
+            text-align: center;
+            min-height: 42px;
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .summary b { color: var(--text); }
+        .summary .sum-highlight { color: var(--accent); font-weight: 700; }
+
+        /* ── Table ── */
+        .table-wrap {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.07);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        thead th {
+            background: var(--card);
+            color: var(--text2);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 13px 14px;
+            text-align: center;
+        }
+        thead th:first-child { text-align: left; padding-left: 18px; }
+        tbody tr {
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        tbody tr:nth-child(odd)  { background: var(--row-odd); }
+        tbody tr:nth-child(even) { background: var(--row-even); }
+        tbody tr:hover { background: rgba(74,159,255,0.09); }
+        tbody tr.selected {
+            background: var(--row-sel) !important;
+            box-shadow: inset 3px 0 0 var(--row-sel-border);
+        }
+        td {
+            padding: 13px 14px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        td:first-child {
+            text-align: left;
+            padding-left: 18px;
+        }
+        .taksit-badge {
+            background: rgba(74,159,255,0.15);
+            border: 1px solid rgba(74,159,255,0.3);
+            color: var(--accent);
+            border-radius: 20px;
+            padding: 3px 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+        .selected .taksit-badge {
+            background: rgba(74,159,255,0.35);
+            border-color: var(--accent);
+        }
+        .rate-col { color: var(--text2); font-size: 0.85rem; }
+        .total-col {
+            color: var(--accent2);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .month-col {
+            color: var(--success);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .check-col {
+            width: 32px;
+            color: var(--accent);
+            font-size: 1.1rem;
+            opacity: 0;
+        }
+        .selected .check-col { opacity: 1; }
+
+        /* ── WhatsApp Panel ── */
+        #waPanel {
+            display: none;
+            margin-top: 22px;
+            background: linear-gradient(135deg, rgba(37,211,102,0.1), rgba(37,211,102,0.05));
+            border: 1.5px solid rgba(37,211,102,0.35);
+            border-radius: 14px;
+            padding: 18px 22px;
+            animation: fadeSlide 0.3s ease;
+        }
+        #waPanel.visible { display: block; }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        #waPanel h3 {
+            font-size: 0.8rem;
+            color: var(--whatsapp);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex; align-items: center; gap: 7px;
+        }
+        .wa-preview {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-size: 0.84rem;
+            line-height: 1.7;
+            color: var(--text);
+            white-space: pre-wrap;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255,255,255,0.06);
+            font-family: 'Courier New', monospace;
+        }
+        .wa-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-wa {
+            background: var(--whatsapp);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 22px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(37,211,102,0.35);
+        }
+        .btn-wa:hover {
+            background: var(--whatsapp-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37,211,102,0.45);
+        }
+        .btn-wa:active { transform: translateY(0); }
+        .btn-copy {
+            background: var(--card);
+            color: var(--text2);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            padding: 11px 18px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 7px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn-copy:hover { background: rgba(74,159,255,0.15); color: var(--accent); }
+        .btn-copy.copied { color: var(--success); border-color: var(--success); }
+
+        /* ── Hint ── */
+        .hint {
+            text-align: center;
+            color: var(--text2);
+            font-size: 0.78rem;
+            margin-top: 16px;
+            opacity: 0.7;
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--card); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-icon">💳</div>
+    <div class="header-text">
+        <h1>Taksit Hesaplama</h1>
+        <p>🎮 Oyun Arşiv · Vade Farkı Hesaplayıcı</p>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="controls">
+        <div class="input-group">
+            <label for="price">Ürün Fiyatı (KDV Hariç)</label>
+            <div class="input-wrapper">
+                <input type="number" id="price" placeholder="0" oninput="calculate()">
+                <span>TL</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label for="kdv">KDV Oranı</label>
+            <div class="input-wrapper">
+                <input type="number" id="kdv" value="8" oninput="calculate()">
+                <span>%</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label for="musteri">Müşteri Adı (Opsiyonel)</label>
+            <div class="input-wrapper">
+                <input type="text" id="musteri" placeholder="Örn: Ahmet Yılmaz"
+                       style="padding: 11px 14px; font-size:1rem; font-family:inherit; font-weight:600;
+                              background: var(--card); border: 1.5px solid rgba(74,159,255,0.25);
+                              border-radius: 10px; color: var(--text); outline:none; width:100%;
+                              transition: border-color .25s, box-shadow .25s;"
+                       oninput="updateWaPreview()"
+                       onfocus="this.style.borderColor='var(--accent)'; this.style.boxShadow='0 0 0 3px rgba(74,159,255,0.2)'"
+                       onblur="this.style.borderColor='rgba(74,159,255,0.25)'; this.style.boxShadow='none'">
+            </div>
+        </div>
+    </div>
+
+    <div class="summary" id="baseInfo">
+        <span>💡 Lütfen ürün fiyatı giriniz.</span>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Taksit Seçeneği</th>
+                    <th>Vade Farkı</th>
+                    <th>Toplam Tutar <small style="opacity:.6">(KDV+Vade)</small></th>
+                    <th>Aylık Taksit</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="resultBody"></tbody>
+        </table>
+    </div>
+
+    <div class="hint" id="hint" style="display:none">
+        👆 Bir taksit seçeneğine tıklayarak WhatsApp'ta paylaşabilirsiniz
+    </div>
+
+    <!-- WhatsApp Paneli -->
+    <div id="waPanel">
+        <h3>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--whatsapp)">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            WhatsApp'ta Gönder
+        </h3>
+        <div class="wa-preview" id="waPreview"></div>
+        <div class="wa-actions">
+            <button class="btn-wa" onclick="sendWhatsApp()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                WhatsApp'ta Aç
+            </button>
+            <button class="btn-copy" id="btnCopy" onclick="copyMessage()">
+                📋 Mesajı Kopyala
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const rates = {
+        2: 6.41, 3: 8.28, 4: 10.15, 5: 12.01, 6: 13.88,
+        7: 15.75, 8: 17.62, 9: 19.49, 10: 21.36, 11: 23.23, 12: 25.10
+    };
+
+    let selectedRow = null;
+    let currentData = {};  // { price, kdvRate, kdvPrice, rows }
+
+    function fmt(n) {
+        return n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' TL';
+    }
+
+    function calculate() {
+        const price    = parseFloat(document.getElementById('price').value);
+        let   kdvRate  = parseFloat(document.getElementById('kdv').value);
+        const tbody    = document.getElementById('resultBody');
+        const baseInfo = document.getElementById('baseInfo');
+        const hint     = document.getElementById('hint');
+
+        tbody.innerHTML = '';
+        selectedRow = null;
+        document.getElementById('waPanel').classList.remove('visible');
+
+        if (isNaN(kdvRate) || kdvRate < 0) kdvRate = 0;
+
+        if (isNaN(price) || price <= 0) {
+            baseInfo.innerHTML = '<span>💡 Hesaplama yapmak için geçerli bir tutar giriniz.</span>';
+            hint.style.display = 'none';
+            return;
+        }
+
+        const kdvAmount = price * (kdvRate / 100);
+        const kdvPrice  = price + kdvAmount;
+
+        currentData = { price, kdvRate, kdvAmount, kdvPrice, rows: {} };
+
+        baseInfo.innerHTML =
+            `Ham Fiyat: <b>${fmt(price)}</b> &nbsp;|&nbsp; ` +
+            `KDV (%${kdvRate}): <b>${fmt(kdvAmount)}</b> &nbsp;|&nbsp; ` +
+            `<span class="sum-highlight">Vade Öncesi Tutar: ${fmt(kdvPrice)}</span>`;
+
+        for (let i = 2; i <= 12; i++) {
+            const rate      = rates[i];
+            const total     = kdvPrice * (1 + rate / 100);
+            const monthly   = total / i;
+            currentData.rows[i] = { rate, total, monthly };
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><span class="taksit-badge">${i} Taksit</span></td>
+                <td class="rate-col">%${rate}</td>
+                <td class="total-col">${fmt(total)}</td>
+                <td class="month-col">${fmt(monthly)}</td>
+                <td class="check-col">✔</td>`;
+            tr.dataset.taksit = i;
+            tr.addEventListener('click', () => selectRow(tr, i));
+            tbody.appendChild(tr);
+        }
+
+        hint.style.display = 'block';
+    }
+
+    function selectRow(tr, taksit) {
+        // Önceki seçimi kaldır
+        if (selectedRow) selectedRow.classList.remove('selected');
+        if (selectedRow === tr) {
+            selectedRow = null;
+            document.getElementById('waPanel').classList.remove('visible');
+            return;
+        }
+        tr.classList.add('selected');
+        selectedRow = tr;
+        updateWaPreview();
+        document.getElementById('waPanel').classList.add('visible');
+        document.getElementById('waPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function buildMessage() {
+        if (!selectedRow) return '';
+        const taksit  = parseInt(selectedRow.dataset.taksit);
+        const d       = currentData.rows[taksit];
+        const musteri = document.getElementById('musteri').value.trim();
+        const selamlama = musteri ? `Sayın ${musteri},\n\n` : 'Merhaba,\n\n';
+
+        return (
+            selamlama +
+            `🎮 *Oyun Arşiv – Taksit Bilgisi*\n` +
+            `━━━━━━━━━━━━━━━━━━━━━\n` +
+            `📦 Ürün Fiyatı (KDV Hariç): *${fmt(currentData.price)}*\n` +
+            `🧾 KDV (%${currentData.kdvRate}): *${fmt(currentData.kdvAmount)}*\n` +
+            `💰 KDV Dahil Fiyat: *${fmt(currentData.kdvPrice)}*\n` +
+            `━━━━━━━━━━━━━━━━━━━━━\n` +
+            `✅ Seçilen Taksit: *${taksit} Ay*\n` +
+            `📈 Vade Farkı: *%${d.rate}*\n` +
+            `💳 Aylık Ödeme: *${fmt(d.monthly)}*\n` +
+            `🔢 Toplam Tutar: *${fmt(d.total)}*\n` +
+            `━━━━━━━━━━━━━━━━━━━━━\n` +
+            `İyi oyunlar! 🕹️`
+        );
+    }
+
+    function updateWaPreview() {
+        if (!selectedRow) return;
+        document.getElementById('waPreview').textContent = buildMessage();
+        document.getElementById('btnCopy').textContent = '📋 Mesajı Kopyala';
+        document.getElementById('btnCopy').classList.remove('copied');
+    }
+
+    function sendWhatsApp() {
+        const msg = buildMessage();
+        if (!msg) return;
+        window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    function copyMessage() {
+        const msg = buildMessage();
+        if (!msg) return;
+        navigator.clipboard.writeText(msg).then(() => {
+            const btn = document.getElementById('btnCopy');
+            btn.textContent = '✅ Kopyalandı!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = '📋 Mesajı Kopyala';
+                btn.classList.remove('copied');
+            }, 2500);
+        });
+    }
+</script>
+
+</body>
+</html>

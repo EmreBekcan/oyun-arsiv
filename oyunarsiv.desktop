@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Oyun Arşiv
+GenericName=Video Oyun Yönetimi
+Comment=Video oyun koleksiyonu, stok ve satış yönetimi
+Exec=bash -c 'cd "/home/emrebekcan/Masaüstü/oyun arşiv" && .venv/bin/python main.py'
+Icon=/home/emrebekcan/Masaüstü/oyun arşiv/icon.png
+Terminal=false
+Categories=Utility;Office;Database;
+StartupWMClass=oyun arşiv
+Keywords=oyun;game;barkod;stok;satış;
