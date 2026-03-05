@@ -1318,6 +1318,7 @@ class App(ctk.CTk):
                 sidebar, text=label, anchor="w",
                 font=("Segoe UI", 13),
                 fg_color="transparent", hover_color=C["card"],
+                text_color=C["text"],
                 corner_radius=8, height=44,
                 command=lambda p=page: self.show_page(p))
             btn.pack(fill="x", padx=10, pady=3)

@@ -16,7 +16,7 @@ import subprocess
 from packaging.version import Version
 
 # ─── Güncelleme Ayarları ───────────────────────────────
-VERSION      = "1.1.4"          # Bu sürüm numarası
+VERSION      = "1.1.1"          # Bu sürüm numarası
 GITHUB_OWNER = "EmreBekcan"
 GITHUB_REPO  = "oyun-arsiv"
 API_URL      = f"https://api.github.com/repos/{GITHUB_OWNER}/{GITHUB_REPO}/releases/latest"
@@ -153,25 +153,7 @@ def guncelleme_indir_ve_uygula(zipball_url: str,
 
 
 def uygulamayi_yeniden_baslat():
-    """Uygulamayı kapatıp yeniden başlatır (Windows + Linux uyumlu)."""
+    """Uygulamayı kapatıp yeniden başlatır."""
     python = sys.executable
-    args   = sys.argv[:]
-
-    if sys.platform == "win32":
-        # Windows: bat dosyasıyla geciktirilmiş yeniden başlatma
-        # (Uygulama kapanmadan .py dosyaları kilitli olduğundan)
-        bat_yol = os.path.join(APP_DIR, "_restart.bat")
-        with open(bat_yol, "w", encoding="utf-8") as f:
-            f.write("@echo off\n")
-            f.write("timeout /t 2 /nobreak >nul\n")
-            arglar = " ".join(f'"{a}"' for a in args)
-            f.write(f'start "" "{python}" {arglar}\n')
-            f.write(f'del "%~f0"\n')  # bat kendini siler
-        subprocess.Popen(["cmd", "/c", bat_yol],
-                         creationflags=subprocess.CREATE_NO_WINDOW,
-                         close_fds=True)
-    else:
-        # Linux / macOS
-        subprocess.Popen([python] + args)
-
+    subprocess.Popen([python] + sys.argv)
     sys.exit(0)

@@ -9,8 +9,8 @@ __pycache__/
 venv/
 env/
 
-# Veritabanı (kişisel veri)
-oyunlar.db
+# Veritabanı yedekleri
+# oyunlar.db  (versiyon takibinde tutulur)
 
 # Yedekler
 yedekler/
