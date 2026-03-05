@@ -143,9 +143,9 @@ class OyunFormDialog(ctk.CTkToplevel):
         bf = ctk.CTkFrame(self, fg_color="transparent")
         bf.pack(fill="x", padx=20, pady=(5, 20))
         ctk.CTkButton(bf, text="Vazgeç", fg_color=C["card"], hover_color="#1a3a6e",
-                      command=self.destroy, width=100).pack(side="right", padx=5)
+                      text_color=C["text"], command=self.destroy, width=100).pack(side="right", padx=5)
         ctk.CTkButton(bf, text="Kaydet", fg_color=C["accent"], hover_color="#2a7fdf",
-                      command=self._kaydet, width=120).pack(side="right", padx=5)
+                      text_color="white", command=self._kaydet, width=120).pack(side="right", padx=5)
 
     def _doldur(self):
         o = db.oyun_getir(self.oyun_id)
@@ -236,23 +236,23 @@ class BarkodDialog(ctk.CTkToplevel):
         nf.pack(pady=4)
         if len(self.oyunlar) > 1:
             ctk.CTkButton(nf, text="◀ Önceki", width=90, fg_color=C["card"],
-                          command=self._onceki).pack(side="left", padx=4)
+                          text_color=C["text"], command=self._onceki).pack(side="left", padx=4)
         self.lbl_sayac = ctk.CTkLabel(nf, text="", text_color=C["text2"])
         self.lbl_sayac.pack(side="left", padx=10)
         if len(self.oyunlar) > 1:
             ctk.CTkButton(nf, text="Sonraki ▶", width=90, fg_color=C["card"],
-                          command=self._sonraki).pack(side="left", padx=4)
+                          text_color=C["text"], command=self._sonraki).pack(side="left", padx=4)
 
         bf = ctk.CTkFrame(self, fg_color="transparent")
         bf.pack(pady=(8, 16))
         ctk.CTkButton(bf, text="PNG Kaydet", width=120,
                       fg_color=C["accent2"], hover_color="#c03050",
-                      command=self._png_kaydet).pack(side="left", padx=6)
+                      text_color="white", command=self._png_kaydet).pack(side="left", padx=6)
         ctk.CTkButton(bf, text="PDF Etiket (Tümü)", width=150,
                       fg_color="#533483", hover_color="#6a45a0",
-                      command=self._pdf_kaydet).pack(side="left", padx=6)
+                      text_color="white", command=self._pdf_kaydet).pack(side="left", padx=6)
         ctk.CTkButton(bf, text="Kapat", width=80, fg_color=C["card"],
-                      command=self.destroy).pack(side="left", padx=6)
+                      text_color=C["text"], command=self.destroy).pack(side="left", padx=6)
 
     def _barkod_goster(self):
         oyun = self.oyunlar[self.indeks]
@@ -386,9 +386,9 @@ class SatisFormDialog(ctk.CTkToplevel):
         bf = ctk.CTkFrame(self, fg_color="transparent")
         bf.pack(fill="x", padx=20, pady=(5, 20))
         ctk.CTkButton(bf, text="Vazgeç", fg_color=C["card"], hover_color="#1a3a6e",
-                      command=self.destroy, width=100).pack(side="right", padx=5)
+                      text_color=C["text"], command=self.destroy, width=100).pack(side="right", padx=5)
         ctk.CTkButton(bf, text="Satışı Kaydet", fg_color=C["success"],
-                      hover_color="#388e3c", command=self._kaydet, width=140).pack(side="right", padx=5)
+                      hover_color="#388e3c", text_color="white", command=self._kaydet, width=140).pack(side="right", padx=5)
 
     def _oyun_secildi(self, secim):
         oyun_id = self._oyun_map.get(secim)
@@ -457,18 +457,18 @@ class OyunlarPage(ctk.CTkFrame):
         self.e_ara.pack(side="left", padx=8)
         self.e_ara.bind("<Return>", lambda e: self.yenile())
         ctk.CTkButton(ust, text="Ara", width=60, fg_color=C["card"],
-                      command=self.yenile).pack(side="left", padx=4)
+                      text_color=C["text"], command=self.yenile).pack(side="left", padx=4)
 
         ctk.CTkButton(ust, text="+ Oyun Ekle", fg_color=C["accent"],
-                      hover_color="#2a7fdf", command=self._ekle).pack(side="right", padx=8)
+                      hover_color="#2a7fdf", text_color="white", command=self._ekle).pack(side="right", padx=8)
         ctk.CTkButton(ust, text="PDF Etiket", fg_color="#533483",
-                      hover_color="#6a45a0", command=self._pdf_tumu).pack(side="right", padx=4)
+                      hover_color="#6a45a0", text_color="white", command=self._pdf_tumu).pack(side="right", padx=4)
         ctk.CTkButton(ust, text="🏷 Barkod", fg_color=C["card"],
-                      command=self._barkod_goster).pack(side="right", padx=4)
+                      text_color=C["text"], command=self._barkod_goster).pack(side="right", padx=4)
         ctk.CTkButton(ust, text="✏ Düzenle", fg_color=C["card"],
-                      command=self._duzenle).pack(side="right", padx=4)
+                      text_color=C["text"], command=self._duzenle).pack(side="right", padx=4)
         ctk.CTkButton(ust, text="🗑 Sil", fg_color=C["error"],
-                      hover_color="#c62828", command=self._sil).pack(side="right", padx=4)
+                      hover_color="#c62828", text_color="white", command=self._sil).pack(side="right", padx=4)
 
         # Treeview
         tree_frame = ctk.CTkFrame(self, fg_color=C["sidebar"], corner_radius=10)
@@ -627,11 +627,11 @@ class StokPage(ctk.CTkFrame):
         self.combo_platform.pack(side="left", padx=8)
 
         ctk.CTkButton(ust, text="Stok Güncelle", fg_color=C["accent"],
-                      command=self._guncelle).pack(side="right", padx=8)
+                      text_color="white", command=self._guncelle).pack(side="right", padx=8)
         ctk.CTkButton(ust, text="+ Ekle", fg_color=C["success"], hover_color="#388e3c",
-                      command=lambda: self._delta(+1)).pack(side="right", padx=4)
+                      text_color="white", command=lambda: self._delta(+1)).pack(side="right", padx=4)
         ctk.CTkButton(ust, text="– Çıkar", fg_color=C["error"], hover_color="#c62828",
-                      command=lambda: self._delta(-1)).pack(side="right", padx=4)
+                      text_color="white", command=lambda: self._delta(-1)).pack(side="right", padx=4)
 
         # Legand
         leg = ctk.CTkFrame(self, fg_color="transparent")
@@ -752,9 +752,9 @@ class SatislarPage(ctk.CTkFrame):
         self.e_ara.bind("<Return>", lambda e: self.yenile())
 
         ctk.CTkButton(ust, text="+ Yeni Satış", fg_color=C["success"],
-                      hover_color="#388e3c", command=self._yeni).pack(side="right", padx=8)
+                      hover_color="#388e3c", text_color="white", command=self._yeni).pack(side="right", padx=8)
         ctk.CTkButton(ust, text="🗑 Sil", fg_color=C["error"], hover_color="#c62828",
-                      command=self._sil).pack(side="right", padx=4)
+                      text_color="white", command=self._sil).pack(side="right", padx=4)
 
         # Treeview
         tf = ctk.CTkFrame(self, fg_color=C["sidebar"], corner_radius=10)
@@ -896,15 +896,15 @@ class RaporPage(ctk.CTkFrame):
         btn_frame.pack(fill="x", padx=10, pady=(4, 12))
 
         ctk.CTkButton(btn_frame, text="↻ Yenile", fg_color=C["card"],
-                      command=self.yenile, width=100).pack(side="left", padx=6)
+                      text_color=C["text"], command=self.yenile, width=100).pack(side="left", padx=6)
         ctk.CTkButton(btn_frame, text="📄 PDF Rapor İndir", fg_color="#533483",
-                      hover_color="#6a45a0", command=self._pdf_rapor,
+                      hover_color="#6a45a0", text_color="white", command=self._pdf_rapor,
                       width=160).pack(side="left", padx=6)
         ctk.CTkButton(btn_frame, text=" DB Yedekle", fg_color=C["accent"],
-                      hover_color="#2a7fdf", command=self._db_yedekle,
+                      hover_color="#2a7fdf", text_color="white", command=self._db_yedekle,
                       width=130).pack(side="right", padx=6)
         ctk.CTkButton(btn_frame, text="📂 DB Geri Yükle", fg_color=C["warning"],
-                      hover_color="#e68a00", command=self._db_geri_yukle,
+                      hover_color="#e68a00", text_color="white", command=self._db_geri_yukle,
                       width=140).pack(side="right", padx=6)
 
     def yenile(self):
@@ -1044,7 +1044,7 @@ class TaksitPage(ctk.CTkFrame):
         ctk.CTkLabel(btn_giris, text=" ", font=("Segoe UI", 10)).pack()
         ctk.CTkButton(btn_giris, text="Hesapla", width=110, height=40,
                       fg_color=C["accent"], hover_color="#2a7fdf",
-                      font=("Segoe UI", 13, "bold"),
+                      text_color="white", font=("Segoe UI", 13, "bold"),
                       command=self._hesapla).pack(pady=(4, 0))
 
         # Özet bandı
@@ -1097,8 +1097,8 @@ class TaksitPage(ctk.CTkFrame):
         # Önizleme metin kutusu
         self.txt_onizleme = ctk.CTkTextbox(self.wa_frame, height=150,
                                             font=("Courier New", 10),
-                                            fg_color="#111120",
-                                            text_color=C["text"],
+                                            fg_color=C["tree_bg"],
+                                            text_color=C["tree_fg"],
                                             corner_radius=8)
         self.txt_onizleme.pack(fill="x", padx=16, pady=(0, 8))
 
@@ -1108,13 +1108,13 @@ class TaksitPage(ctk.CTkFrame):
         self.btn_wa = ctk.CTkButton(
             btn_wrap, text="📲  WhatsApp'ta Aç", width=180,
             fg_color="#25d366", hover_color="#1aa34a",
-            font=("Segoe UI", 12, "bold"),
+            text_color="white", font=("Segoe UI", 12, "bold"),
             command=self._whatsapp_ac)
         self.btn_wa.pack(side="left", padx=(0, 10))
         self.btn_kopyala = ctk.CTkButton(
             btn_wrap, text="📋  Kopyala", width=120,
             fg_color=C["card"], hover_color=C["accent"],
-            font=("Segoe UI", 12),
+            text_color=C["text"], font=("Segoe UI", 12),
             command=self._kopyala)
         self.btn_kopyala.pack(side="left")
 
@@ -1359,7 +1359,7 @@ class App(ctk.CTk):
         self._btn_guncelle_indir = ctk.CTkButton(
             self._guncelle_frame,
             text="🔄  Güncelle", height=32,
-            font=("Segoe UI", 11, "bold"),
+            text_color="white", font=("Segoe UI", 11, "bold"),
             fg_color="#25d366", hover_color="#1aa34a",
             command=self._guncelleme_baslat)
         self._btn_guncelle_indir.pack(fill="x", padx=10, pady=(2, 8))
