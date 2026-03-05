@@ -16,7 +16,7 @@ import subprocess
 from packaging.version import Version
 
 # ─── Güncelleme Ayarları ───────────────────────────────
-VERSION      = "1.1.5"          # Bu sürüm numarası
+VERSION      = "1.1.7"          # Bu sürüm numarası
 GITHUB_OWNER = "EmreBekcan"
 GITHUB_REPO  = "oyun-arsiv"
 API_URL      = f"https://api.github.com/repos/{GITHUB_OWNER}/{GITHUB_REPO}/releases/latest"
