@@ -13,10 +13,9 @@ import zipfile
 import shutil
 import tempfile
 import subprocess
-from packaging.version import Version
 
 # ─── Güncelleme Ayarları ───────────────────────────────
-VERSION      = "1.1.8"          # Bu sürüm numarası
+VERSION      = "1.1.9"          # Bu sürüm numarası
 GITHUB_OWNER = "EmreBekcan"
 GITHUB_REPO  = "oyun-arsiv"
 API_URL      = f"https://api.github.com/repos/{GITHUB_OWNER}/{GITHUB_REPO}/releases/latest"
@@ -27,11 +26,18 @@ APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def _surum_karsilastir(mevcut: str, yeni: str) -> bool:
-    """Yeni sürüm mevcuttan büyükse True döner."""
+    """Yeni sürüm mevcuttan büyükse True döner.
+    Önce packaging ile dener, yoksa tuple karşılaştırması kullanır."""
+    def _tuple(v: str):
+        try:
+            return tuple(int(x) for x in v.lstrip("v").split("."))
+        except Exception:
+            return (0,)
     try:
+        from packaging.version import Version
         return Version(yeni) > Version(mevcut)
     except Exception:
-        return False
+        return _tuple(yeni) > _tuple(mevcut)
 
 
 def _api_kontrol() -> dict | None:
