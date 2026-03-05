@@ -900,10 +900,10 @@ class RaporPage(ctk.CTkFrame):
         ctk.CTkButton(btn_frame, text="📄 PDF Rapor İndir", fg_color="#533483",
                       hover_color="#6a45a0", command=self._pdf_rapor,
                       width=160).pack(side="left", padx=6)
-        ctk.CTkButton(btn_frame, text="�  GitHub'a Yükle", fg_color="#24292e",
+        ctk.CTkButton(btn_frame, text="📤 GitHub'a Yükle", fg_color="#24292e",
                       hover_color="#444d56", command=self._github_yukle,
                       width=160).pack(side="left", padx=6)
-        ctk.CTkButton(btn_frame, text="�💾 DB Yedekle", fg_color=C["accent"],
+        ctk.CTkButton(btn_frame, text="💾 DB Yedekle", fg_color=C["accent"],
                       hover_color="#2a7fdf", command=self._db_yedekle,
                       width=130).pack(side="right", padx=6)
         ctk.CTkButton(btn_frame, text="📂 DB Geri Yükle", fg_color=C["warning"],
@@ -1561,7 +1561,7 @@ class App(ctk.CTk):
         self.grid_rowconfigure(0, weight=1)
 
         # ── Sidebar ──
-        sidebar = ctk.CTkFrame(self, width=210, fg_color=C["sidebar"],
+        sidebar = ctk.CTkFrame(self, width=220, fg_color=C["sidebar"],
                                 corner_radius=0)
         sidebar.grid(row=0, column=0, sticky="ns")
         sidebar.grid_propagate(False)
@@ -1600,15 +1600,18 @@ class App(ctk.CTk):
                      side="bottom", pady=4)
 
         # ── Tema toggle butonu ──
+        ttk.Separator(sidebar).pack(fill="x", padx=16, side="bottom", pady=(4, 0))
         self.btn_tema = ctk.CTkButton(
             sidebar,
-            text="☀️  Açık Moda Geç" if _aktif_tema == "dark" else "🌙  Koyu Moda Geç",
+            text="☀️  Açık Mod" if _aktif_tema == "dark" else "🌙  Koyu Mod",
             anchor="w",
-            font=("Segoe UI", 12),
-            fg_color=C["card"], hover_color=C["accent"],
+            font=("Segoe UI", 12, "bold"),
+            fg_color="#2a4a7f" if _aktif_tema == "dark" else "#c5cfe0",
+            hover_color=C["accent"],
+            text_color=C["text"],
             corner_radius=8, height=40,
             command=self._tema_degistir)
-        self.btn_tema.pack(fill="x", padx=10, pady=(6, 2), side="bottom")
+        self.btn_tema.pack(fill="x", padx=10, pady=(4, 10), side="bottom")
 
         # ── Güncelleme bildirim bloğu (başlangıçta gizli) ──
         self._sidebar = sidebar
