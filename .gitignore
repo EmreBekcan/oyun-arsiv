@@ -12,6 +12,9 @@ env/
 # Veritabanı yedekleri
 # oyunlar.db  (versiyon takibinde tutulur)
 
+# Kullanıcı ayarları (tema, vb.) — güncellemeyle üzerine yazılmasın
+config.json
+
 # Yedekler
 yedekler/
 

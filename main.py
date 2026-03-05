@@ -6,13 +6,37 @@ Video oyun koleksiyonu, stok ve satış yönetimi
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import customtkinter as ctk
-import os, subprocess, sys, webbrowser, urllib.parse
+import os, subprocess, sys, webbrowser, urllib.parse, json
 from PIL import Image, ImageTk
 import io
 
 import database as db
 import barcode_gen as bk
 import updater
+
+# ─────────────────── AYAR DOSYASI ──────────────────────
+_CONFIG_DOSYASI = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+
+def _ayar_yukle(anahtar: str, varsayilan):
+    try:
+        with open(_CONFIG_DOSYASI, "r", encoding="utf-8") as f:
+            return json.load(f).get(anahtar, varsayilan)
+    except Exception:
+        return varsayilan
+
+def _ayar_kaydet(**kwargs):
+    ayarlar = {}
+    try:
+        with open(_CONFIG_DOSYASI, "r", encoding="utf-8") as f:
+            ayarlar = json.load(f)
+    except Exception:
+        pass
+    ayarlar.update(kwargs)
+    try:
+        with open(_CONFIG_DOSYASI, "w", encoding="utf-8") as f:
+            json.dump(ayarlar, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
 
 # ─────────────────── TEMA & RENKLER ────────────────────
 ctk.set_default_color_theme("blue")
@@ -56,10 +80,10 @@ TEMALAR = {
     },
 }
 
-_aktif_tema = "dark"
-ctk.set_appearance_mode("dark")
+_aktif_tema = _ayar_yukle("tema", "dark")
+ctk.set_appearance_mode(_aktif_tema)
 
-C = dict(TEMALAR["dark"])
+C = dict(TEMALAR[_aktif_tema])
 
 
 def ttk_style_ayarla():
@@ -1234,10 +1258,10 @@ class App(ctk.CTk):
         # Temel çözünürlük: 1920 genişlik
         ekran_w = self.winfo_screenwidth()
         ekran_h = self.winfo_screenheight()
-        olcek = max(0.75, min(1.40, ekran_w / 1920))
-        if abs(olcek - 1.0) > 0.04:   # önemsiz fark varsa uygulama
-            ctk.set_widget_scaling(olcek)
-            ctk.set_window_scaling(olcek)
+        # DPI bazlı ölçekleme: 1920×1080 temel, max 2.0 (4K desteği)
+        olcek = max(0.80, min(2.0, ekran_w / 1920))
+        ctk.set_widget_scaling(olcek)
+        ctk.set_window_scaling(olcek)
 
         self.title("Oyun Arşiv")
         # Pencere boyutunu ekrana oran olarak aç
@@ -1438,6 +1462,7 @@ class App(ctk.CTk):
         _aktif_tema = "light" if _aktif_tema == "dark" else "dark"
         C.update(TEMALAR[_aktif_tema])
         ctk.set_appearance_mode(_aktif_tema)
+        _ayar_kaydet(tema=_aktif_tema)   # kalıcı kaydet
         ttk_style_ayarla()
 
         # Aktif sayfayı hatırla, tüm widget’ları yeniden oluştur
