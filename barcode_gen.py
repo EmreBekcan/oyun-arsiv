@@ -86,6 +86,21 @@ def barkod_bytes_getir(barkod_no: str, oyun_adi: str = "") -> bytes:
     return out.getvalue()
 
 
+def _poppins_kaydet():
+    """Poppins fontunu ReportLab'a kaydeder (Türkçe karakter desteği)."""
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    font_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts")
+    regular = os.path.join(font_dir, "Poppins-Regular.ttf")
+    bold    = os.path.join(font_dir, "Poppins-Bold.ttf")
+    try:
+        pdfmetrics.registerFont(TTFont("Poppins", regular))
+        pdfmetrics.registerFont(TTFont("Poppins-Bold", bold))
+        return True
+    except Exception:
+        return False
+
+
 def pdf_etiket_olustur(oyunlar: list, dosya_yolu: str = None) -> str:
     """
     Birden fazla oyun için A4 sayfa üzerine barkod etiketleri oluşturur.
@@ -97,6 +112,10 @@ def pdf_etiket_olustur(oyunlar: list, dosya_yolu: str = None) -> str:
     from reportlab.lib.utils import ImageReader
     import barcode
     from barcode.writer import ImageWriter
+
+    use_poppins = _poppins_kaydet()
+    font_normal = "Poppins" if use_poppins else "Helvetica"
+    font_bold   = "Poppins-Bold" if use_poppins else "Helvetica-Bold"
 
     klasor_hazirla()
     if dosya_yolu is None:
@@ -149,16 +168,16 @@ def pdf_etiket_olustur(oyunlar: list, dosya_yolu: str = None) -> str:
                     preserveAspectRatio=True, anchor="sw")
 
         # Oyun adı
-        c.setFont("Helvetica-Bold", 7)
+        c.setFont(font_bold, 7)
         ad_kisalt = oyun["ad"][:28] if len(oyun["ad"]) > 28 else oyun["ad"]
         c.drawString(x + 2 * mm, y + etiket_yuk * 0.28, ad_kisalt)
 
         # Platform
-        c.setFont("Helvetica", 6)
+        c.setFont(font_normal, 6)
         c.drawString(x + 2 * mm, y + etiket_yuk * 0.16, oyun.get("platform", ""))
 
         # Barkod numarası (alt)
-        c.setFont("Helvetica", 6)
+        c.setFont(font_normal, 6)
         c.drawString(x + 2 * mm, y + etiket_yuk * 0.05, oyun["barkod"])
 
         # Etiket çerçevesi
@@ -182,6 +201,10 @@ def pdf_rapor_olustur(oyunlar: list, satislar: list = None, dosya_yolu: str = No
     from reportlab.pdfgen import canvas
     from datetime import datetime
 
+    use_poppins = _poppins_kaydet()
+    font_normal = "Poppins" if use_poppins else "Helvetica"
+    font_bold   = "Poppins-Bold" if use_poppins else "Helvetica-Bold"
+
     klasor_hazirla()
     if dosya_yolu is None:
         dosya_yolu = os.path.join(BARKOD_KLASOR, "oyun_rapor.pdf")
@@ -196,11 +219,11 @@ def pdf_rapor_olustur(oyunlar: list, satislar: list = None, dosya_yolu: str = No
 
     def baslik_yaz():
         nonlocal y
-        c.setFont("Helvetica-Bold", 18)
+        c.setFont(font_bold, 18)
         c.setFillColor(colors.HexColor("#1a1a2e"))
         c.drawString(kenar, y, "Oyun Arşiv - Envantar Raporu")
         y -= 18
-        c.setFont("Helvetica", 9)
+        c.setFont(font_normal, 9)
         c.setFillColor(colors.gray)
         c.drawString(kenar, y, f"Oluşturulma: {datetime.now().strftime('%d.%m.%Y %H:%M')}  |  Toplam: {len(oyunlar)} oyun")
         y -= 12
@@ -211,7 +234,7 @@ def pdf_rapor_olustur(oyunlar: list, satislar: list = None, dosya_yolu: str = No
 
     def tablo_baslik():
         nonlocal y
-        c.setFont("Helvetica-Bold", 8)
+        c.setFont(font_bold, 8)
         c.setFillColor(colors.HexColor("#1a1a2e"))
         # Sütun pozisyonları
         c.drawString(kenar,       y, "#")
@@ -247,7 +270,7 @@ def pdf_rapor_olustur(oyunlar: list, satislar: list = None, dosya_yolu: str = No
             c.setFillColor(colors.HexColor("#f5f5f5"))
             c.rect(kenar - 2, y - 3, sayfa_gen - 2 * kenar + 4, satir_yuk, fill=1, stroke=0)
 
-        c.setFont("Helvetica", 7.5)
+        c.setFont(font_normal, 7.5)
         c.setFillColor(colors.black)
 
         ad = o.get("ad", "")[:30]
@@ -279,7 +302,7 @@ def pdf_rapor_olustur(oyunlar: list, satislar: list = None, dosya_yolu: str = No
         c.drawString(kenar + 460, y, stok)
 
         c.setFillColor(colors.gray)
-        c.setFont("Helvetica", 6.5)
+        c.setFont(font_normal, 6.5)
         c.drawString(kenar + 485, y, barkod)
 
         y -= satir_yuk
@@ -288,7 +311,7 @@ def pdf_rapor_olustur(oyunlar: list, satislar: list = None, dosya_yolu: str = No
     if satislar:
         c.showPage()
         y = sayfa_yuk - kenar
-        c.setFont("Helvetica-Bold", 16)
+        c.setFont(font_bold, 16)
         c.setFillColor(colors.HexColor("#1a1a2e"))
         c.drawString(kenar, y, "Satış Geçmişi")
         y -= 12
@@ -298,7 +321,7 @@ def pdf_rapor_olustur(oyunlar: list, satislar: list = None, dosya_yolu: str = No
         y -= 20
 
         # Satış tablo başlığı
-        c.setFont("Helvetica-Bold", 8)
+        c.setFont(font_bold, 8)
         c.setFillColor(colors.HexColor("#1a1a2e"))
         c.drawString(kenar,       y, "#")
         c.drawString(kenar + 18,  y, "Tarih")
@@ -323,7 +346,7 @@ def pdf_rapor_olustur(oyunlar: list, satislar: list = None, dosya_yolu: str = No
                 c.setFillColor(colors.HexColor("#f5f5f5"))
                 c.rect(kenar - 2, y - 3, sayfa_gen - 2 * kenar + 4, satir_yuk, fill=1, stroke=0)
 
-            c.setFont("Helvetica", 7.5)
+            c.setFont(font_normal, 7.5)
             c.setFillColor(colors.black)
 
             toplam = s.get("miktar", 1) * s.get("satis_fiyati", 0)
@@ -343,7 +366,7 @@ def pdf_rapor_olustur(oyunlar: list, satislar: list = None, dosya_yolu: str = No
 
         # Ciro toplamı
         y -= 8
-        c.setFont("Helvetica-Bold", 10)
+        c.setFont(font_bold, 10)
         c.setFillColor(colors.HexColor("#1a1a2e"))
         c.drawString(kenar + 360, y, f"Toplam Ciro: {toplam_ciro:,.0f} ₺")
 
