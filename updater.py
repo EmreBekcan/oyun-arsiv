@@ -15,7 +15,7 @@ import tempfile
 import subprocess
 
 # ─── Güncelleme Ayarları ───────────────────────────────
-VERSION      = "1.1.9"          # Bu sürüm numarası
+VERSION      = "1.2.1"          # Bu sürüm numarası
 GITHUB_OWNER = "EmreBekcan"
 GITHUB_REPO  = "oyun-arsiv"
 API_URL      = f"https://api.github.com/repos/{GITHUB_OWNER}/{GITHUB_REPO}/releases/latest"
@@ -69,7 +69,8 @@ def guncelleme_kontrol(callback):
         if not veri:
             return
         tag = veri.get("tag_name", "").lstrip("v")
-        if _surum_karsilastir(VERSION, tag):
+        guncel = mevcut_surum()   # bellekteki değil, disk üzerindeki sürüm
+        if _surum_karsilastir(guncel, tag):
             zipball  = veri.get("zipball_url", "")
             html_url = veri.get("html_url", "")
             try:
@@ -126,9 +127,10 @@ def guncelleme_indir_ve_uygula(zipball_url: str,
             icerik = os.listdir(tmp_dir)
             kaynak = os.path.join(tmp_dir, icerik[0]) if len(icerik) == 1 else tmp_dir
 
-            # ── 3. .py, .txt dosyalarını kopyala ─────────
+            # ── 3. Dosya ve klasörleri kopyala ────────────
             kopyalanmaz = {"oyunlar.db", "yedekler", "__pycache__",
-                           ".git", ".gitignore", "icon.png"}
+                           ".git", ".gitignore", "icon.png",
+                           ".venv", "config.json"}
             for dosya in os.listdir(kaynak):
                 if dosya in kopyalanmaz:
                     continue
@@ -136,6 +138,11 @@ def guncelleme_indir_ve_uygula(zipball_url: str,
                 hedef_yol  = os.path.join(APP_DIR, dosya)
                 if os.path.isfile(kaynak_yol):
                     shutil.copy2(kaynak_yol, hedef_yol)
+                elif os.path.isdir(kaynak_yol):
+                    # Klasörü tamamen kopyala (fonts vb.)
+                    if os.path.exists(hedef_yol):
+                        shutil.rmtree(hedef_yol, ignore_errors=True)
+                    shutil.copytree(kaynak_yol, hedef_yol)
 
             if bitti_cb:
                 try:
@@ -156,6 +163,22 @@ def guncelleme_indir_ve_uygula(zipball_url: str,
                 shutil.rmtree(tmp_dir, ignore_errors=True)
 
     threading.Thread(target=_run, daemon=True).start()
+
+
+def mevcut_surum() -> str:
+    """Disk üzerindeki updater.py'den güncel VERSION değerini okur.
+    (Modül bellekte eski kalabilir, bu fonksiyon her zaman dosyadan okur.)"""
+    import re
+    try:
+        yol = os.path.join(APP_DIR, "updater.py")
+        with open(yol, "r", encoding="utf-8") as f:
+            for satir in f:
+                m = re.match(r'^VERSION\s*=\s*["\']([^"\']+)["\']', satir.strip())
+                if m:
+                    return m.group(1)
+    except Exception:
+        pass
+    return VERSION
 
 
 def uygulamayi_yeniden_baslat():

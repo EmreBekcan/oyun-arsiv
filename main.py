@@ -1351,7 +1351,7 @@ class App(ctk.CTk):
         # Alt bilgiler
         ctk.CTkFrame(sidebar, height=1, fg_color=C["card"]).pack(
             fill="x", padx=16, side="bottom", pady=(0, 8))
-        ctk.CTkLabel(sidebar, text=f"v{updater.VERSION}  |  Oyun Arşiv",
+        ctk.CTkLabel(sidebar, text=f"v{updater.mevcut_surum()}  |  Oyun Arşiv",
                      font=("Segoe UI", 9), text_color=C["text2"]).pack(
                      side="bottom", pady=4)
 
